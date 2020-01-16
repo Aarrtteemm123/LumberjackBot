@@ -3,38 +3,45 @@ import time
 
 from PIL import Image
 
+from ctypes import *
+time.sleep(2)
+adder = CDLL('buttons.dll')
+adder.left()
 last_key = 'left'
-pyautogui.keyDown('left')
-pyautogui.keyUp('left')
-
+# 60 fps - 0,0166666666666667 sec/frame
+pause = 0.1#0.15
+sleep = 0.07
+i = 0
 while True:
+    print('Start new loop')
     start = time.time()
 
-    screen = pyautogui.screenshot('screen.png',region=(840,360,260,1))
+    screen = pyautogui.screenshot('frame\screen'+str(i)+'.png',region=(840,360,260,300))
+    #print('Screenshot: '+str(time.time()-start))
 
-    print('Screenshot: '+str(time.time()-start))
+    #start = time.time()
 
-    start = time.time()
-    img = Image.open("screen.png")
+    img = Image.open('frame\screen'+str(i)+'.png')
     pixels = img.load()
 
-    print('Convert: ' + str(time.time() - start))
-    start = time.time()
-    
+    #print('Convert: ' + str(time.time() - start))
+    #start = time.time()
+
     if pixels[0, 0] == (126, 173, 79):
-        start = time.time()
-        pyautogui.keyDown('right')
-        pyautogui.keyUp('right')
+        adder.right()
+        time.sleep(pause)
         last_key = 'right'
-    elif pixels[259, 0] == (126, 173, 79):
-        pyautogui.keyDown('left')
-        pyautogui.keyUp('left')
+    if pixels[259, 0] == (126, 173, 79):
+        adder.left()
+        time.sleep(pause)
         last_key = 'left'
     if last_key == 'right':
-        pyautogui.keyDown('right')
-        pyautogui.keyUp('right')
-    elif last_key == 'left':
-        pyautogui.keyDown('left')
-        pyautogui.keyUp('left')
+        adder.right()
+        time.sleep(pause)
+    if last_key == 'left':
+        adder.left()
+        time.sleep(pause)
 
+    time.sleep(sleep)
+    i=1
     print('Processing: ' + str(time.time() - start))
