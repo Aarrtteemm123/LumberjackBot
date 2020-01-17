@@ -6,40 +6,34 @@ from ctypes import *
 
 def search_pixel(pixels, depth, x_vertical):
     for y in range(depth):
-        if pixels[x_vertical, y] == (161, 116, 56) or pixels[x_vertical, y] == (136, 99, 50):
+        if pixels[x_vertical, y] == (161, 116, 56) \
+                or pixels[x_vertical, y] == (136, 99, 50):  # color texture wood
             return True
     return False
 
 
-time.sleep(2)
-clicker = CDLL('butFunctions.dll')
-clicker.clickLeftBut()
-last_key = 'left'
-pause = 0.03  # 0.1
-sleep = 0.00  # 0.07
-i = 0
+clicker = CDLL('butFunctions.dll')  # loading c++ function
+clicker.clickLeftBut()  # press left button
+last_key = 'left'  # last clicked key
+pause = 0.03  # pause for loading game animation
+
 while True:
-    print('Start new loop')
-    start = time.time()
+    start = time.time()  # counter
 
-    left = pyautogui.screenshot('left_frames\screen' + str(i) + '.png', region=(840, 220, 80, 220))
-    right = pyautogui.screenshot('right_frames\screen' + str(i) + '.png', region=(1000, 220, 80, 220))
-    # print('Screenshot: '+str(time.time()-start))
+    # screenshot left and right part tree
+    pyautogui.screenshot('left_frame.png', region=(840, 220, 80, 220))
+    pyautogui.screenshot('right_frame.png', region=(1000, 220, 80, 220))
 
-    # start = time.time()
+    # loading pixels from image
+    left_pixels = Image.open('left_frame.png').load()
+    right_pixels = Image.open('right_frame.png').load()
 
-    left_pixels = Image.open('left_frames\screen' + str(i) + '.png').load()
-    right_pixels = Image.open('right_frames\screen' + str(i) + '.png').load()
-
-    # print('Convert: ' + str(time.time() - start))
-    # start = time.time()
-
-    if search_pixel(left_pixels, 200, 40):
-        clicker.clickRightBut()
+    if search_pixel(left_pixels, 200, 40):  # search wood color pixel
+        clicker.clickRightBut()  # press right button
         time.sleep(pause)
         last_key = 'right'
     if search_pixel(right_pixels, 200, 40):
-        clicker.clickLeftBut()
+        clicker.clickLeftBut()  # press left button
         time.sleep(pause)
         last_key = 'left'
     if last_key == 'right':
@@ -49,6 +43,4 @@ while True:
         clicker.clickLeftBut()
         time.sleep(pause)
 
-    time.sleep(sleep)
-    i = 1
-    print('Processing: ' + str(time.time() - start))
+    print('Processing: ' + str(time.time() - start))  # processing time (sec)
