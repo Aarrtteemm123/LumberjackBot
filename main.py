@@ -6,7 +6,7 @@ from ctypes import *
 
 def search_pixel(pixels, depth, x_vertical):
     for y in range(depth):
-        if pixels[x_vertical, y] == (161, 116, 56) or pixels[40, y] == (136, 99, 50):
+        if pixels[x_vertical, y] == (161, 116, 56) or pixels[x_vertical, y] == (136, 99, 50):
             return True
     return False
 
